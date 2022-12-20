@@ -1,16 +1,22 @@
-# This is a sample Python script.
+# Main script
+import time
 
-# Press Umschalt+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from scanner import input_scanner
+import cv2 as cv
 
+i_s = input_scanner(1000, 1000, 0, 0)
+#test = i_s.record_screen_seconds(100, save_in_class=True)
+#print(type(test[0]))
+#cv.imshow("Name0", test[0])
+#cv.waitKey(0)
+#cv.imshow("Name1", test[99])
+#cv.waitKey(0)
+#cv.imshow("Last Picture", i_s.get_current_save()[59])
+#cv.waitKey(0)
+#cv.destroyAllWindows()
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Strg+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+#i_s.record_keyboard(2, True, 'p')
+#i_s.record_screen_keyboard(True, "esc", "p")
+#print(len(i_s.current_save))
+#cv.imshow("Name 0", i_s.current_save[4][0])
+i_s.record_screen_keyboard(True, "p", "u ")
