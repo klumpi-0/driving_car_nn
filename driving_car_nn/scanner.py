@@ -5,6 +5,7 @@ import keyboard
 import time
 
 
+
 class input_scanner:
     def __init__(self, width_, height_, top_, left_):
         """
