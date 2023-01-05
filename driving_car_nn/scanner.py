@@ -24,14 +24,25 @@ class input_scanner:
         self.monitor = {"top": self.top, "left": self.left, "width": self.width, "height": self.height}
         print("Created a scanner from size: ", self.width, self.height)
 
-    def record_screen_seconds(self, seconds, save_in_class):
+    def record_screen_keyboard_seconds(self, seconds, save_in_class):
+        print("Start recording screen and keyboard...")
         screenshots = []
+        c = 0
         monitor = {"top": self.top, "left": self.left, "width": self.width, "height": self.height}
         with mss() as sct:
             for _ in range(seconds):
-                screenshots.append(numpy.array(sct.grab(monitor)))
+                key_dict = {
+                    "up": keyboard.is_pressed("w"),
+                    "left": keyboard.is_pressed("a"),
+                    "down": keyboard.is_pressed("s"),
+                    "right": keyboard.is_pressed("d")
+                }
+                screenshots.append([numpy.array(sct.grab(monitor)), key_dict])
+                print(c, " picture")
+                c = c + 1
         if save_in_class:
             self.current_save = screenshots
+        print("Stop recording")
         return screenshots
 
     def record_screen_keyboard(self, save_in_class, start_key, stop_key):

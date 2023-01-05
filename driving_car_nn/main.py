@@ -1,6 +1,7 @@
 # Main script
 import time
 
+import cv2
 import numpy
 from mss import mss
 
@@ -9,27 +10,27 @@ from keyboard_recorder import keyboard_recorder
 import keyboard
 import cv2 as cv
 
+
+def print_switcher(input):
+    output = ""
+    tmp = ""
+    tmp = "x" if input["up"] else "_"
+    output += tmp
+    tmp = "x" if input["left"] else "_"
+    output += tmp
+    tmp = "x" if input["down"] else "_"
+    output += tmp
+    tmp = "x" if input["right"] else "_"
+    output += tmp
+    return output
+
+
 time.sleep(4)
-screenshot = []
-c = 0
-monitor = {"top": 0, "left": 0, "width": 1000, "height": 1000}
 
-print("Start recording")
-with mss() as sct:
-    for _ in range(1000):
-        key_dict = {
-            "up": keyboard.is_pressed("w"),
-            "left": keyboard.is_pressed("a"),
-            "down": keyboard.is_pressed("s"),
-            "right": keyboard.is_pressed("d"),
-            "number": c
-        }
-        screenshot.append([numpy.array(sct.grab(monitor)), key_dict])
-        c = c + 1
-        print(c, " picture taken")
-
-print(screenshot[999][1])
-# i_s = input_scanner(1000, 1000, 0, 0)
+i_s = input_scanner(1000, 1000, 0, 0)
+i_s.record_screen_keyboard_seconds(100, True)
+for i in range(len(i_s.current_save)):
+    print(i, print_switcher(i_s.current_save[i][1]))
 # kr = keyboard_recorder()
 # kr.record_keys()
 # for i in range(100):
