@@ -40,7 +40,7 @@ class input_scanner:
                 screenshots.append([numpy.array(sct.grab(monitor)), key_dict])
                 print(c, " picture")
                 c = c + 1
-                if keyboard.is_pressed("p"):
+                if keyboard.is_pressed("right shift"):
                     print("Break recording early...")
                     break
         if save_in_class:
@@ -51,13 +51,18 @@ class input_scanner:
     def save_data_at(self, path, name_text_file):
         """
         Works only if data is stored in list with entrys: [picture, dictionary pressed keys]
-        :param path:
+        :param name_text_file: How to name the txt file
+        :param path: Where to save the recorded data
         :return:
         """
+        print("Start saving data")
         with open(path + name_text_file + '.txt', 'w') as f:
             for i in range(len(self.current_save)):
-                cv2.imwrite(path + "image_training" + str(i) + ".jpg", self.current_save[i][0])
+                if i % 100 == 0:
+                    cv2.imwrite(path + "image_training_original" + str(i) + ".jpg", self.current_save[i][0])
+                cv2.imwrite(path + "image_training_grey" + str(i) + ".jpg", cv2.resize(cv2.cvtColor(self.current_save[i][0], cv2.COLOR_BGR2GRAY), (240, 135)))
                 f.write(self.switch_dictionary_to_string(self.current_save[i][1]) + "\n")
+        print("Finished saving data")
 
     def switch_dictionary_to_string(self, input_):
         output = ""
