@@ -40,12 +40,17 @@ def create_train_model():
 def main():
     print("Wuhu")
     i_s = input_scanner(1920, 1080, 0, 0)
-    model = create_train_model()
-    #model = tf.keras.models.load_model('Models/NN')
-    print(model.summary())
-    data = tf.convert_to_tensor(cv2.cvtColor(cv2.imread('Assets/___x/image_training_grey123.jpg'), cv2.COLOR_BGR2GRAY))
-    print("Shape ", data.shape)
-    output = model(tf.reshape(data, [135, 240]))
+    #model = create_train_model()
+    model = tf.keras.models.load_model('Models/NN')
+    #print(model.summary())
+    data = (cv2.imread('Assets/___x/image_training_grey123.jpg'))
+    data = cv2.cvtColor(data, cv2.COLOR_BGR2GRAY)
+    #data = cv2.resize(data, (135, 240))
+    data = numpy.expand_dims(data, axis=0)
+    #data = numpy.expand_dims(data, axis=-1)
+    #print("Shape ", data.shape)
+    print("data ", data.shape)
+    output = model.predict(data)
     print(output)
 
 
