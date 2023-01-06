@@ -1,9 +1,9 @@
 # Class which can record the screen at the inputs on the keyboard at the same time
+import cv2
 from mss import mss
 import numpy
 import keyboard
 import time
-
 
 
 class input_scanner:
@@ -40,10 +40,37 @@ class input_scanner:
                 screenshots.append([numpy.array(sct.grab(monitor)), key_dict])
                 print(c, " picture")
                 c = c + 1
+                if keyboard.is_pressed("p"):
+                    print("Break recording early...")
+                    break
         if save_in_class:
             self.current_save = screenshots
         print("Stop recording")
         return screenshots
+
+    def save_data_at(self, path, name_text_file):
+        """
+        Works only if data is stored in list with entrys: [picture, dictionary pressed keys]
+        :param path:
+        :return:
+        """
+        with open(path + name_text_file + '.txt', 'w') as f:
+            for i in range(len(self.current_save)):
+                cv2.imwrite(path + "image_training" + str(i) + ".jpg", self.current_save[i][0])
+                f.write(self.switch_dictionary_to_string(self.current_save[i][1]) + "\n")
+
+    def switch_dictionary_to_string(self, input_):
+        output = ""
+        tmp = ""
+        tmp = "x" if input_["up"] else "_"
+        output += tmp
+        tmp = "x" if input_["left"] else "_"
+        output += tmp
+        tmp = "x" if input_["down"] else "_"
+        output += tmp
+        tmp = "x" if input_["right"] else "_"
+        output += tmp
+        return output
 
     def record_screen_keyboard(self, save_in_class, start_key, stop_key):
         print("Start recording at the moment [", start_key, "]key is pressed")

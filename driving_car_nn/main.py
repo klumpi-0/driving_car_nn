@@ -11,26 +11,13 @@ import keyboard
 import cv2 as cv
 
 
-def print_switcher(input):
-    output = ""
-    tmp = ""
-    tmp = "x" if input["up"] else "_"
-    output += tmp
-    tmp = "x" if input["left"] else "_"
-    output += tmp
-    tmp = "x" if input["down"] else "_"
-    output += tmp
-    tmp = "x" if input["right"] else "_"
-    output += tmp
-    return output
 
 
 time.sleep(4)
 
-i_s = input_scanner(1000, 1000, 0, 0)
-i_s.record_screen_keyboard_seconds(100, True)
-for i in range(len(i_s.current_save)):
-    print(i, print_switcher(i_s.current_save[i][1]))
+i_s = input_scanner(1920, 1080, 0, 0)
+i_s.record_screen_keyboard_seconds(50, True)
+i_s.save_data_at('Assets/', 'input_string')
 # kr = keyboard_recorder()
 # kr.record_keys()
 # for i in range(100):
