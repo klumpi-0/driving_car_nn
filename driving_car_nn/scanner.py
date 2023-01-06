@@ -60,7 +60,7 @@ class input_scanner:
             for i in range(len(self.current_save)):
                 if i % 100 == 0:
                     cv2.imwrite(path + "image_training_original" + str(i) + ".jpg", self.current_save[i][0])
-                cv2.imwrite(path + "image_training_grey" + str(i) + ".jpg", cv2.resize(cv2.cvtColor(self.current_save[i][0], cv2.COLOR_BGR2GRAY), (240, 135)))
+                cv2.imwrite(path + self.switch_dictionary_to_string(self.current_save[i][1]) + "/image_training_grey" + str(i) + ".jpg", cv2.resize(cv2.cvtColor(self.current_save[i][0], cv2.COLOR_BGR2GRAY), (240, 135)))
                 f.write(self.switch_dictionary_to_string(self.current_save[i][1]) + "\n")
         print("Finished saving data")
 
