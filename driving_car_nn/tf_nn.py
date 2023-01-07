@@ -3,7 +3,7 @@ import numpy
 import tensorflow as tf
 
 
-# does not work
+# does not work/ is not needed
 def parse_function(filename, label):
     image_string = tf.read_file("Assets/" + filename)
     image_decode = tf.image.decode_jpeg(image_string, channels=1)
@@ -11,7 +11,7 @@ def parse_function(filename, label):
     return image, label
 
 
-# does not work
+# does not work/ is not needed
 def create_dataset(data, recorder, label_txt):
     list_filenames = []
     list_labels = []
@@ -104,12 +104,30 @@ class NeuralNetworkTrackmania:
             epochs=epochs_
         )
 
-    def check_single_picture(self, picture_path):
+    def check_single_picture_disk(self, picture_path):
+        """
+        Gives output of NN with given picture
+        :param picture_path: where picture is stored
+        :return:the label of the given class
+        """
         data = numpy.expand_dims(cv2.cvtColor(cv2.imread(picture_path), cv2.COLOR_BGR2GRAY), axis=0)
         output = self.model.predict(data)
-        # output = numpy.sort(output)
-        print("Output for ", picture_path, " ", output)
-        return output
+        max_value_index = numpy.argmax(output[0])
+        label = self.labels[max_value_index]
+        return label
+
+    def check_single_picture(self, picture):
+        """
+        Gives output of NN with given picture
+        :param picture_path: where picture is stored
+        :return:the label of the given class
+        """
+        data = numpy.expand_dims(cv2.cvtColor(picture, cv2.COLOR_BGR2GRAY), axis=0)
+        output = self.model.predict(data)
+        max_value_index = numpy.argmax(output[0])
+        label = self.labels[max_value_index]
+        return label
+
 
     def create_and_train_model(self, path_to_data, save_model_path, save_model=True, get_labels=False):
         """

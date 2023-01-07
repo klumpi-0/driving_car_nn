@@ -28,9 +28,10 @@ class input_scanner:
         print("Start recording screen and keyboard...")
         screenshots = []
         c = 0
+        t_end = time.time() + seconds
         monitor = {"top": self.top, "left": self.left, "width": self.width, "height": self.height}
         with mss() as sct:
-            for _ in range(seconds):
+            while time.time() < t_end:
                 key_dict = {
                     "up": keyboard.is_pressed("w"),
                     "left": keyboard.is_pressed("a"),
