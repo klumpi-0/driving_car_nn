@@ -70,7 +70,26 @@ class input_scanner:
             for i in range(len(self.current_save)):
                 if i % 100 == 0:
                     cv2.imwrite(path + "image_training_original" + str(i) + ".jpg", self.current_save[i][0])
-                cv2.imwrite(path + self.switch_dictionary_to_string(self.current_save[i][1]) + "/" + name_text_file + "_" + str(i) + ".jpg", cv2.resize(cv2.cvtColor(self.current_save[i][0], cv2.COLOR_BGR2GRAY), (240, 135)))
+                cv2.imwrite(
+                    path + "/" +
+                    self.switch_dictionary_to_string(self.current_save[i][1]) + "/" +
+                    name_text_file + "_" + str(i) + ".jpg",
+                    cv2.resize(cv2.cvtColor(self.current_save[i][0], cv2.COLOR_BGR2GRAY), (240, 135)))
+                f.write(self.switch_dictionary_to_string(self.current_save[i][1]) + "\n")
+        print("Finished saving data")
+
+
+    def save_data_at_canny_edge_gradient(self, path, name_text_file):
+        print("Start saving data")
+        with open(path + name_text_file + '.txt', 'w') as f:
+            for i in range(len(self.current_save)):
+                if i % 100 == 0:
+                    cv2.imwrite(path + "image_training_original" + str(i) + ".jpg", self.current_save[i][0])
+                cv2.imwrite(
+                    path + "/" +
+                    self.switch_dictionary_to_string(self.current_save[i][1]) + "/" +
+                    name_text_file + "_" + str(i) + ".jpg",
+                    cv2.Canny(cv2.resize(cv2.cvtColor(self.current_save[i][0], cv2.COLOR_BGR2GRAY), (240, 135)), threshold1=100, threshold2=100))
                 f.write(self.switch_dictionary_to_string(self.current_save[i][1]) + "\n")
         print("Finished saving data")
 
@@ -91,7 +110,7 @@ class input_scanner:
         return self.current_save
 
 
-    def record_screen_seconds_batch_save(self, seconds, starting_number_batch, save_path):
+    def record_screen_seconds_batch_save(self, seconds, starting_number_batch, save_path, edge):
         """
         Records screen and keyboard in batch mode for seconds
         :param seconds: How many each video should record
@@ -102,7 +121,7 @@ class input_scanner:
         keep_recording = True
         c = starting_number_batch
         while keep_recording:
-            self.record_screen_seconds_save(seconds=seconds, name_picture=str(c).zfill(4), save_path=save_path)
+            self.record_screen_seconds_save(seconds=seconds, name_picture=str(c).zfill(4), save_path=save_path, edge=edge)
             playsound('Assets/Audio/press_o_to.mp3')
             while True:
                 if keyboard.is_pressed("o"):
@@ -114,9 +133,10 @@ class input_scanner:
                     break
             c = c + 1
 
-    def record_screen_seconds_save(self, seconds, name_picture, save_path):
+    def record_screen_seconds_save(self, seconds, name_picture, save_path, edge):
         """
         Records and saves the screen and keys
+        :param edge: if we want to use edge detection
         :param seconds:
         :param name_picture:
         :param save_path:
@@ -125,4 +145,7 @@ class input_scanner:
         playsound('Assets/Audio/start_recording.mp3')
         self.record_screen_keyboard_seconds(seconds=seconds, save_in_class=True)
         playsound('Assets/Audio/stop_recording.mp3')
-        self.save_data_at(path=save_path, name_text_file=name_picture)
+        if edge:
+            self.save_data_at_canny_edge_gradient(path=save_path, name_text_file=name_picture)
+        else:
+            self.save_data_at(path=save_path, name_text_file=name_picture)

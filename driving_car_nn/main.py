@@ -25,7 +25,7 @@ def controll_trackmania(nnmodel, i_s, seconds):
 def main():
     print("Wuhu")
     i_s = input_scanner(1920, 1080, 0, 0)
-    i_s.record_screen_seconds_batch_save(seconds=20, starting_number_batch=20, save_path='Training/Level2/')
+    i_s.record_screen_seconds_batch_save(seconds=20, starting_number_batch=20, save_path='Training/EdgeLevel1', edge=True)
     # record_screen_sceonds_batch(inputscanner=i_s, seconds=20, save_path='Training/AllLevels/')
     # can be uncommented if wanted
     # nnmodel = load_nn()
