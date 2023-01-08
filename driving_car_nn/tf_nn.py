@@ -3,41 +3,6 @@ import numpy
 import tensorflow as tf
 
 
-# does not work/ is not needed
-def parse_function(filename, label):
-    image_string = tf.read_file("Assets/" + filename)
-    image_decode = tf.image.decode_jpeg(image_string, channels=1)
-    image = tf.cast(image_decode, tf.float32)
-    return image, label
-
-
-# does not work/ is not needed
-def create_dataset(data, recorder, label_txt):
-    list_filenames = []
-    list_labels = []
-    label_file = open(label_txt, 'r')
-    Lines = label_file.readlines()
-
-    # Create list filled with the picture names and labels
-    for line in Lines:
-        tmp = []
-        for letter in line:
-            tmp.append(True if letter == 'x' else False)
-        list_labels.append(tmp)
-    for i in range(len(recorder.current_save)):
-        list_filenames.append('image_training_grey' + str(i) + '.jpg')
-
-    filenames = tf.constant(list_filenames)
-    labels = tf.constant(list_labels)
-
-    dataset = tf.data.Dataset.from_tensor_slices((filenames, labels))
-
-    dataset = dataset.map(parse_function)
-    dataset = dataset.batch(2)
-
-    iterator = dataset.make_one_shot_iterator()
-
-
 def load_images(image_path):
     """
     Creates an training and validation dataset
@@ -130,7 +95,6 @@ class NeuralNetworkTrackmania:
         max_value_index = numpy.argmax(output[0])
         label = self.labels[max_value_index]
         return label
-
 
     def create_and_train_model(self, path_to_data, save_model_path, save_model=True, get_labels=False):
         """

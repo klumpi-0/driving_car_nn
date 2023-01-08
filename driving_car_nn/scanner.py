@@ -13,7 +13,7 @@ class input_scanner:
         Creates a scanner which records the screen and teh input on the keyboard
         :param width_: x-size
         :param height_: y-size
-        :param top_: y-postion
+        :param top_: y-position
         :param left_:x-position
         """
         self.width = width_
@@ -60,7 +60,7 @@ class input_scanner:
 
     def save_data_at(self, path, name_text_file):
         """
-        Works only if data is stored in list with entrys: [picture, dictionary pressed keys]
+        Works only if data is stored in list with entries: [picture, dictionary pressed keys]
         :param name_text_file: How to name the txt file
         :param path: Where to save the recorded data
         :return:
@@ -87,97 +87,42 @@ class input_scanner:
         output += tmp
         return output
 
-    def record_screen_keyboard(self, save_in_class, start_key, stop_key):
-        print("Start recording at the moment [", start_key, "]key is pressed")
-        keyboard.wait(start_key)
-        print("Start recording...")
-        self.is_recording = True
-        with mss() as sct:
-            while self.is_recording:
-                if keyboard.read_key() == stop_key:
-                    self.is_recording = False
-                if keyboard.read_key() == "w":
-                    self.current_save.append([numpy.array(sct.grab(self.monitor)), "w"])
-                elif keyboard.read_key() == "a":
-                    self.current_save.append([numpy.array(sct.grab(self.monitor)), "a"])
-                elif keyboard.read_key() == "s":
-                    self.current_save.append([numpy.array(sct.grab(self.monitor)), "s"])
-                elif keyboard.read_key() == "d":
-                    self.current_save.append([numpy.array(sct.grab(self.monitor)), "s"])
-                else:
-                    self.current_save.append([numpy.array(sct.grab(self.monitor)), "nothing"])
-        print("Stopped recording")
-
-    def save_screenshot_button(self, button):
-        with mss() as sct:
-            print("Picture taken for:", button)
-            self.current_save.append([numpy.array(sct.grab(self.monitor)), button])
-
-    def create_screenshot(self, save_in_class):
-        """
-        Returns screenshot of selected monitor
-        :param save_in_class:
-        :return:
-        """
-        with mss() as sct:
-            screenshot_ = numpy.array(sct.grab(self.monitor))
-            if save_in_class:
-                self.current_save.append(screenshot_)
-        return screenshot_
-
-    def grab_keyboard_input(self):
-        if keyboard.read_key() == "w":
-            return "w"
-        elif keyboard.read_key() == "a":
-            return "a"
-        elif keyboard.read_key() == "s":
-            return "s"
-        elif keyboard.read_key() == "d":
-            return "d"
-        else:
-            return "nothing"
-
-    def record_keyboard(self, seconds, save_in_class, stop_key):
-        print("Start recording of keyboard...")
-        keyboard_inputs = keyboard.record(until=stop_key)
-        keyboard.press(stop_key)
-        print("\nRecording is finished")
-        if save_in_class:
-            self.current_save = keyboard_inputs
-        return keyboard_inputs
-
-    def start_recording(self, stop_key):
-        """
-        Starts recording of keyboard and set screen-parameters
-        """
-        print("Start Recording...")
-        datapackage = []
-        self.is_recording = True
-        while self.is_recording:
-            print("entering loop")
-            save_data = [self.create_screenshot(False), self.grab_keyboard_input()]
-            print("Pressed key:", save_data[1])
-            self.should_stop_recording(stop_key)
-            print("still recording")
-
-    def stop_recording(self):
-        """
-        Used to stop recording of recorder
-        :return:
-        """
-        print("Stop recording")
-        self.is_recording = True
-
-    def should_stop_recording(self, stop_button):
-        """
-        Returns true if program should stop recording
-        :return:
-        """
-        if keyboard.read_key() == stop_button:
-            print("Stop recording")
-            self.is_recording = False
-            return True
-        return False
-
     def get_current_save(self):
         return self.current_save
+
+
+    def record_screen_seconds_batch_save(self, seconds, starting_number_batch, save_path):
+        """
+        Records screen and keyboard in batch mode for seconds
+        :param seconds: How many each video should record
+        :param starting_number_batch: with which number the each batch should start saving the pictures (dont use same number twice)
+        :param save_path: where the pictures should be saved
+        :return: nothing
+        """
+        keep_recording = True
+        c = starting_number_batch
+        while keep_recording:
+            self.record_screen_seconds_save(seconds=seconds, name_picture=str(c).zfill(4), save_path=save_path)
+            playsound('Assets/Audio/press_o_to.mp3')
+            while True:
+                if keyboard.is_pressed("o"):
+                    keep_recording = True
+                    break
+                if keyboard.is_pressed("l"):
+                    keep_recording = False
+                    playsound('Assets/Audio/stoping_session.mp3')
+                    break
+            c = c + 1
+
+    def record_screen_seconds_save(self, seconds, name_picture, save_path):
+        """
+        Records and saves the screen and keys
+        :param seconds:
+        :param name_picture:
+        :param save_path:
+        :return:
+        """
+        playsound('Assets/Audio/start_recording.mp3')
+        self.record_screen_keyboard_seconds(seconds=seconds, save_in_class=True)
+        playsound('Assets/Audio/stop_recording.mp3')
+        self.save_data_at(path=save_path, name_text_file=name_picture)
