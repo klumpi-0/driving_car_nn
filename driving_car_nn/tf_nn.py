@@ -91,7 +91,7 @@ class NeuralNetworkTrackmania:
         ])
         return model
 
-    def train_model(self, train_ds, val_ds, epochs_):
+    def train_model(self, train_ds, val_ds, epochs_, save_model=False, save_model_path=''):
         print("Train model...")
         self.model.compile(
             optimizer='adam',
@@ -103,6 +103,9 @@ class NeuralNetworkTrackmania:
             validation_data=val_ds,
             epochs=epochs_
         )
+        if save_model:
+            print("Saved model at:", save_model_path)
+            tf.keras.models.save_model(model=self.model, filepath=save_model_path)
 
     def check_single_picture_disk(self, picture_path):
         """

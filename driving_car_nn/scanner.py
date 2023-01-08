@@ -1,6 +1,7 @@
 # Class which can record the screen at the inputs on the keyboard at the same time
 import cv2
 from mss import mss
+from playsound import playsound
 import numpy
 import keyboard
 import time
@@ -25,11 +26,19 @@ class input_scanner:
         print("Created a scanner from size: ", self.width, self.height)
 
     def record_screen_keyboard_seconds(self, seconds, save_in_class):
-        print("Start recording screen and keyboard...")
+        """
+        Records screen and keyboard fpr given time
+        :param seconds: length of recording in seconds
+        :param save_in_class: if it should be saved in the class
+        :return: recorded data
+        """
+        print("Start recording screen and keyboard in 3 seconds")
+        time.sleep(3)
         screenshots = []
         c = 0
         t_end = time.time() + seconds
-        monitor = {"top": self.top, "left": self.left, "width": self.width, "height": self.height}
+        print("Start recording...")
+        playsound('Assets/Audio/b.mp3')
         with mss() as sct:
             while time.time() < t_end:
                 key_dict = {
@@ -38,7 +47,7 @@ class input_scanner:
                     "down": keyboard.is_pressed("s"),
                     "right": keyboard.is_pressed("d")
                 }
-                screenshots.append([numpy.array(sct.grab(monitor)), key_dict])
+                screenshots.append([numpy.array(sct.grab(self.monitor)), key_dict])
                 print(c, " picture")
                 c = c + 1
                 if keyboard.is_pressed("right shift"):
@@ -61,7 +70,7 @@ class input_scanner:
             for i in range(len(self.current_save)):
                 if i % 100 == 0:
                     cv2.imwrite(path + "image_training_original" + str(i) + ".jpg", self.current_save[i][0])
-                cv2.imwrite(path + self.switch_dictionary_to_string(self.current_save[i][1]) + "/image_training_grey" + str(i) + ".jpg", cv2.resize(cv2.cvtColor(self.current_save[i][0], cv2.COLOR_BGR2GRAY), (240, 135)))
+                cv2.imwrite(path + self.switch_dictionary_to_string(self.current_save[i][1]) + "/" + name_text_file + "_" + str(i) + ".jpg", cv2.resize(cv2.cvtColor(self.current_save[i][0], cv2.COLOR_BGR2GRAY), (240, 135)))
                 f.write(self.switch_dictionary_to_string(self.current_save[i][1]) + "\n")
         print("Finished saving data")
 

@@ -88,9 +88,12 @@ class tm_controller:
                 screenshot = cv2.resize((screenshot), (240, 135))
                 # send picture into nn
                 label_action = nn_model.check_single_picture(screenshot)
+                print("Pressing ", label_action)
                 # press buttons according to action
                 for button in self.list_all_keys:
                     ReleaseKey(button)
                 for i in range(len(label_action)):
                     if label_action[i] == 'x':
                         PressKey(self.list_all_keys[i])
+            for button in self.list_all_keys:
+                ReleaseKey(button)
