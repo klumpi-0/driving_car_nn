@@ -45,9 +45,9 @@ class NeuralNetworkTrackmania:
             print("Created model")
         self.labels = []
 
-    def create_nn_model(self, number_outputs):
+    def create_nn_model(self, number_outputs, input_picture_shape=(135, 240)):
         model = tf.keras.models.Sequential([
-            tf.keras.layers.Flatten(input_shape=(135, 240)),
+            tf.keras.layers.Flatten(input_shape=input_picture_shape),
             tf.keras.layers.Rescaling(1. / 255),
             tf.keras.layers.Dense(128),
             tf.keras.layers.Dense(64),
@@ -91,6 +91,18 @@ class NeuralNetworkTrackmania:
         :return:the label of the given class
         """
         data = numpy.expand_dims(cv2.cvtColor(picture, cv2.COLOR_BGR2GRAY), axis=0)
+        output = self.model.predict(data)
+        max_value_index = numpy.argmax(output[0])
+        label = self.labels[max_value_index]
+        return label
+
+    def check_single_picture_canny(self, picture):
+        """
+        Gives output of NN with given picture
+        :param picture_path: where picture is stored
+        :return:the label of the given class
+        """
+        data = numpy.expand_dims(cv2.Canny(cv2.cvtColor(picture, cv2.COLOR_BGR2GRAY), threshold1=100, threshold2=100), axis=0)
         output = self.model.predict(data)
         max_value_index = numpy.argmax(output[0])
         label = self.labels[max_value_index]

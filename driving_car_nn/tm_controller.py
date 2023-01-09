@@ -73,6 +73,32 @@ class tm_controller:
         self.key_s = 0x1F
         self.key_d = 0x20
 
+    def control_car_canny(self, seconds, nn_model, monitor):
+        print("Start controlling car in 3 seconds\nEnds in ", seconds, " seconds or by pressing shift")
+        time.sleep(3)
+        print("Controlling car")
+        t_end = time.time() + seconds
+        with mss() as sct:
+            while time.time() < t_end:
+                if keyboard.is_pressed("right shift"):
+                    print("Stop controlling early...")
+                    break
+                # create picture of screen
+                screenshot = numpy.array(sct.grab(monitor))
+                screenshot = cv2.resize((screenshot), (240, 135))
+                # send picture into nn
+                label_action = nn_model.check_single_picture_canny(screenshot)
+                print("Pressing ", label_action)
+                # press buttons according to action
+                for button in self.list_all_keys:
+                    ReleaseKey(button)
+                for i in range(len(label_action)):
+                    if label_action[i] == 'x':
+                        PressKey(self.list_all_keys[i])
+            for button in self.list_all_keys:
+                ReleaseKey(button)
+
+
     def control_car(self, seconds, nn_model, monitor):
         print("Start controlling car in 3 seconds\nEnds in ", seconds, " seconds or by pressing shift")
         time.sleep(3)
