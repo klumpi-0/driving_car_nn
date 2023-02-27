@@ -99,7 +99,7 @@ class tm_controller:
                 ReleaseKey(button)
 
 
-    def control_car(self, seconds, nn_model, monitor):
+    def control_car(self, seconds, nn_model, monitor, image_width, image_height):
         print("Start controlling car in 3 seconds\nEnds in ", seconds, " seconds or by pressing shift")
         time.sleep(3)
         print("Controlling car")
@@ -111,7 +111,7 @@ class tm_controller:
                     break
                 # create picture of screen
                 screenshot = numpy.array(sct.grab(monitor))
-                screenshot = cv2.resize((screenshot), (240, 135))
+                screenshot = cv2.resize((screenshot), (image_width, image_height))
                 # send picture into nn
                 label_action = nn_model.check_single_picture(screenshot)
                 print("Pressing ", label_action)

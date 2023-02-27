@@ -10,8 +10,8 @@ def load_images(image_path):
     :return: training dataset and validation dataset
     """
     batch_size = 20
-    image_width = 240
-    image_height = 135
+    image_width = 480
+    image_height = 270
     train_ds = tf.keras.utils.image_dataset_from_directory(
         image_path,
         validation_split=0.2,
@@ -35,19 +35,19 @@ def load_images(image_path):
 
 
 class NeuralNetworkTrackmania:
-    def __init__(self, number_outputs, load_model=False, path_to_model=''):
+    def __init__(self, number_outputs, load_model=False, path_to_model='', input_picture_shape=(135, 240)):
         print("Start creating a model...")
         if load_model:
             self.model = tf.keras.models.load_model(path_to_model)
             print("Loaded model from ", path_to_model)
         else:
-            self.model = self.create_nn_model(number_outputs)
+            self.model = self.create_nn_model(number_outputs, input_picture_shape=input_picture_shape)
             print("Created model")
         self.labels = []
 
     def create_nn_model(self, number_outputs, input_picture_shape=(135, 240)):
         model = tf.keras.models.Sequential([
-            tf.keras.layers.Flatten(input_shape=input_picture_shape),
+            tf.keras.layers.Flatten(input_shape=(270,480)),
             tf.keras.layers.Rescaling(1. / 255),
             tf.keras.layers.Dense(128),
             tf.keras.layers.Dense(64),
